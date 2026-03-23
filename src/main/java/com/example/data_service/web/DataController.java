@@ -56,15 +56,15 @@ public class DataController {
     }
 
 //
-//    @ResponseStatus(HttpStatus.OK)
-//    @DeleteMapping("/del/{idP}")
-//
-//    public ResponseEntity<Boolean> delMapArt(@PathVariable String idP){
-////        MyMessage myMessage=myMessageListener.receiveMessage(MyMessage my);
-//
-////                return ResponseEntity.ok(true);
-//                return ResponseEntity.ok(mapStocService.delMapStoc(idP));
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/del/{idP}")
+
+    public ResponseEntity<Boolean> delMapArt(@PathVariable String idP){
+//        MyMessage myMessage=myMessageListener.receiveMessage(MyMessage my);
+
+//                return ResponseEntity.ok(true);
+                return ResponseEntity.ok(mapStocService.delMapStoc(idP));
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/getbyidp/{idP}")
@@ -79,14 +79,21 @@ public class DataController {
 
     }
 
-//    @ResponseStatus(HttpStatus.OK)
-//    @PostMapping("/update")
-//    public ResponseEntity<MapStocOptim> updateMapArt(@RequestBody MapStocOptim mapstoc){
-//        log.info("COMM_UPDATE:"+mapstoc.toString());
-//        log.info("Updateeeeeeee");
-////        return ResponseEntity.ok(mapstoc);
-//       return ResponseEntity.ok(mapStocService.updMapStoc(mapstoc));
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/update")
+    public ResponseEntity<MapStocOptim> updateMapArt(@RequestBody MapStocOptim mapstoc) {
+        try {
+
+            MapStocOptim mp = mapStocService.updMapStoc(mapstoc);
+            log.info("COMM_UPDATE:" + mapstoc.toString());
+            log.info("Updateeeeeeee");
+
+            return ResponseEntity.ok(mp);
+        } catch (Exception e) {
+                throw(new RuntimeException("Eroare de UPDATE"));
+        }
+
+    }
 
 //    @ResponseStatus(HttpStatus.OK)
 //    @PostMapping("/bulk")

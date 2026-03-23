@@ -2,10 +2,11 @@ package com.example.data_service.model;
 
 import java.time.Instant;
 
+
 public class MessageEvent {
   private String id;
   private MessageAction action;
-  private String payload;
+  private Object payload;
   private Instant timestamp;
 
   public MessageEvent() {
@@ -34,11 +35,11 @@ public class MessageEvent {
     this.action = action;
   }
 
-  public String getPayload() {
+  public Object getPayload() {
     return payload;
   }
 
-  public void setPayload(String payload) {
+  public void setPayload(Object payload) {
     this.payload = payload;
   }
 

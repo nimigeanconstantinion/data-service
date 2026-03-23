@@ -35,8 +35,13 @@ public class MapStocServiceImpl implements MapStocService{
 
         try{
             log.info("cmdAdd: "+mp.toString());
+            Optional<MapStocOptim> optP=mapStocRepo.findByCodProdus(mp.getIdIntern().trim());
+            if(optP.isPresent()){
+                    throw(new RuntimeException("Eroare din Service MapStocService produ existent"));
+            }else {
+                mapStocRepo.save(mp);
 
-            mapStocRepo.save(mp);
+            }
 //            return mapStocRepo.findByCodProdus(mp.getIdIntern()).get();
         }catch (RuntimeException e){
             log.error("cmdUpdErr: "+mp.toString());
@@ -54,7 +59,6 @@ public class MapStocServiceImpl implements MapStocService{
 
             throw new RuntimeException("Produsul cu cod-ul indicat nu exista!!");
         }
-//        log.info(mk,mp.get().getArticol());
         log.info("cmdDel: "+mp.toString());
         mapStocRepo.delete(mp.get());
         return true;

@@ -6,6 +6,8 @@ import com.example.data_service.model.MessageEntity;
 import com.example.data_service.model.MessageEvent;
 import com.example.data_service.repository.MapStocRepo;
 import com.example.data_service.repository.MessageRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,85 +16,104 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static net.logstash.logback.argument.StructuredArguments.*;
 
 @Service
 public class MessageConsumerService {
-  private final MessageRepository repository;
-  private final MapStocService mapStocService;
+//  private MessageRepository repository;
+  private MapStocService mapStocService;
   private static final Logger log = LoggerFactory.getLogger(MessageConsumerService.class);
+  private MessageRepository messageRepository;
 
-  public MessageConsumerService(MessageRepository repository,MapStocService mapStocService) {
+  public MessageConsumerService(MapStocService mapStocService, MessageRepository messageRepository) {
 
-    this.repository = repository;
     this.mapStocService=mapStocService;
+    this.messageRepository = messageRepository;
   }
 
   @Transactional
-  @KafkaListener(topics = "${app.kafka.topic}")
-  public void handle(MessageEvent event) {
-    System.out.println("Kafka consumer received: " + event);
+  @KafkaListener(topics = "product-topic")
+  public void handle(MessageEvent event)  {
     if (event == null || event.getId() == null) {
       log.error("null event received",
               keyValue("eventType", "CONSUMER_MESSAGE"),
               value("ERROR", event));
       return;
     }
-
+//
     Gson gson = new Gson(); // Or use new GsonBuilder().create();
-    MapStocOptim product = gson.fromJson(event.getPayload(), MapStocOptim.class); // deserializes json into target2
-
+    MessageEntity mesaj= new MessageEntity();
+    mesaj.setId(event.getId());
+    mesaj.setAction(event.getAction().name());
+    mesaj.setPayload(gson.toJson(event.getPayload()));
+    mesaj.setUpdatedAt(event.getTimestamp());
+    MapStocOptim mesProduct=gson.fromJson(mesaj.getPayload(),MapStocOptim.class);
+    mesProduct.setId(0L);
     if (MessageAction.DELETED.equals(event.getAction())) {
+      List<MessageEntity> mesaje=messageRepository.findAll();
+
       try {
-        mapStocService.delMapStoc(product.getIdIntern());
+
+        mapStocService.delMapStoc(mesProduct.getIdIntern());
         log.info("DELETE SUCCES",
                 keyValue("deleteSUCCES", "DELETE"),
-                value("product", product));
+                value("product", mesProduct));
 
 
       }catch (Exception e){
         log.error("DELETE ERROR",
                 keyValue("deleteERROR", e.getMessage()),
-                value("product", product));
+                value("product", mesProduct));
       }
-
 
     }else if (MessageAction.UPDATED.equals(event.getAction())) {
       try {
-        mapStocService.updMapStoc(product);
+        mapStocService.updMapStoc(mesProduct);
         log.info("UPDATE SUCCES",
                 keyValue("updateSucces", "UPDATE"),
-                value("product", product));
+                value("product", mesProduct));
 
       }catch (Exception e){
         log.error("UPDATE ERROR",
                 keyValue("deleteERROR", e.getMessage()),
-                value("product", product));
+                value("product", mesProduct));
 
       }
     } else if (MessageAction.CREATED.equals(event.getAction())) {
       try {
-        mapStocService.addMapStoc(product);
-        log.info("CREATE SUCCES",
-                keyValue("createSucces", "CREATE"),
-                value("product", product));
+        List<MessageEntity> listaMesaje=messageRepository.findAll();
+        if(listaMesaje.stream().filter(p->p.getId().equals(mesaj.getId())&&p.getAction().equals("CREATED")).collect(Collectors.toList()).size()==0){
+
+             try{
+               mapStocService.addMapStoc(mesProduct);
+               log.info("PRODUCT_CREATED_SUCCES",
+                       keyValue("PRODUCT_CREATED", mesProduct));
+
+             }catch (Exception e){
+
+             }
+             messageRepository.save(mesaj);
+            log.info("MESSAGE_CREATED_SUCCES",
+                  keyValue("MESSAGE_CREATED", mesaj));
+
+        }else{
+          log.error("DATA_CREATED_ERR",
+                  keyValue("MESSAGE_EXISTS", mesProduct));
+
+        }
 
       }catch (Exception e){
         log.error("CREATE ERROR",
-                keyValue("createERROR", e.getMessage()),
-                value("product", product));
+                keyValue("createERROR", e.getMessage()));
 
 
       }
     }
 
 
-//
-//    MessageEntity entity = new MessageEntity(
-//        event.getId(),
-//        event.getAction().name(),
-//        event.getPayload(),
-//        event.getTimestamp() != null ? event.getTimestamp() : Instant.now());
-//    repository.save(entity);
   }
 }

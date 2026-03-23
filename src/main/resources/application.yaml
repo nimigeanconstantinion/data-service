@@ -1,92 +1,12 @@
-spring:
-  application:
-    name: data-service
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/micro_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
-    show-sql: true
-
-  sleuth:
-    sampler:
-      probability: 1.0
-  #
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost/keycloak/realms/rsk/protocol/openid-connect/certs
-
-
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowed-origins: "http://localhost:5000,http://localhost:3000,http://127.0.0.1:8000,http://localhost:8085"  # Updated to reflect the gateway's address if served through the gateway.
-            allowed-methods: "GET, POST, PUT, DELETE, OPTIONS"
-            allowed-headers: "Authorization, Content-Type, Accept"
-            allow-credentials: true
-            max-age: 1800 # 30 minutes
-  Kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:30001}
-    consumer:
-      group-id: ${KAFKA_CONSUMER_GROUP_ID:testing-app-consumer-local}
-      enable-auto-commit: true
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.use.type.headers: false
-        spring.json.value.default.type: com.testing.app.consumer.model.MessageEvent
-
-
 server:
-  port: 8081
-
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-  level:
-    root: info
-  file:
-    name: data-service.log
-  config: classpath:logback-spring.xml
-
-
-management:
-  tracing:
-    enabled: false
-    sampling:
-      probability: 1
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  endpoint:
-    health:
-      show:
-        details: always
-    prometheus:
-      enabled: true
-  metrics:
-    distribution:
-      percentiles-histogram:
-        http.server.request: true
-
+  port: ${SERVER_PORT:8081}
+  forward-headers-strategy: framework
+  tomcat:
+    use-relative-redirects: true
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH:/}
 
 app:
-  security:
-    expected-issuer: http://localhost/keycloak/realms/rsk
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost,http://localhost:3000,http://localhost:4200}
   kafka:
@@ -96,6 +16,39 @@ app:
     kibana-base-url: ${KIBANA_BASE_URL:http://localhost/kibana}
     logstash-host: ${LOGSTASH_HOST:127.0.0.1}
     logstash-port: ${LOGSTASH_PORT:30544}
+  security:
+    expected-issuer: http://localhost/keycloak/realms/rsk
+
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/micro_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:30001}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:consumer-local}
+      enable-auto-commit: true
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.example.data_service.model.MessageEvent
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost/keycloak/realms/rsk/protocol/openid-connect/certs
+
 
 springdoc:
   swagger-ui:
@@ -104,3 +57,8 @@ springdoc:
     url: ../v3/api-docs
   api-docs:
     path: /v3/api-docs
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.consumer: INFO

@@ -1,14 +1,11 @@
 package com.example.data_service.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.Instant;
 
 @Entity
-//@Table(name = "messages")
+@Table(name = "messages")
 public class MessageEntity {
   @Id
   @Column(length = 36)
