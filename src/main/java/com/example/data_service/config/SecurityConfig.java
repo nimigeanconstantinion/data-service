@@ -157,8 +157,8 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // orice altceva – necesită token
-//                        .anyRequest().authenticated()
-                          .anyRequest().permitAll()
+                        .anyRequest().authenticated()
+//                          .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
