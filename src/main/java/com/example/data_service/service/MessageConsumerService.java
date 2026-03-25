@@ -37,11 +37,7 @@ public class MessageConsumerService {
 
   @Transactional
 //  @KafkaListener(topics = "product-topic")
-  @KafkaListener(
-          id = "productConsumer",                // ID-ul pe care îl vei folosi în Controller
-          topics = "product-topic",
-          autoStartup = "false"                  // Împiedică pornirea automată la startul aplicației
-  )
+  @KafkaListener(topics = "product-topic")
   public void handle(MessageEvent event)  {
     if (event == null || event.getId() == null) {
       log.error("null event received",
