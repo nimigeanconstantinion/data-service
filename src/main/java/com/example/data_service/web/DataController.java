@@ -19,12 +19,12 @@ import java.util.List;
 public class DataController {
 
     private MapStocService mapStocService;
-    private MessageConsumerService consumerService;
+//    private MessageConsumerService consumerService;
 
-    public DataController(MapStocService mapStocService, MessageConsumerService consumerService) {
+    public DataController(MapStocService mapStocService) {
 
         this.mapStocService = mapStocService;
-        this.consumerService=consumerService;
+//        this.consumerService=consumerService;
 
     }
 

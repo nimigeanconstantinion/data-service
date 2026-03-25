@@ -36,7 +36,12 @@ public class MessageConsumerService {
   }
 
   @Transactional
-  @KafkaListener(topics = "product-topic")
+//  @KafkaListener(topics = "product-topic")
+  @KafkaListener(
+          id = "productConsumer",                // ID-ul pe care îl vei folosi în Controller
+          topics = "product-topic",
+          autoStartup = "false"                  // Împiedică pornirea automată la startul aplicației
+  )
   public void handle(MessageEvent event)  {
     if (event == null || event.getId() == null) {
       log.error("null event received",
@@ -85,30 +90,33 @@ public class MessageConsumerService {
       }
     } else if (MessageAction.CREATED.equals(event.getAction())) {
       try {
-        List<MessageEntity> listaMesaje=messageRepository.findAll();
-        if(listaMesaje.stream().filter(p->p.getId().equals(mesaj.getId())&&p.getAction().equals("CREATED")).collect(Collectors.toList()).size()==0){
-
-             try{
-               mapStocService.addMapStoc(mesProduct);
-               log.info("PRODUCT_CREATED_SUCCES",
-                       keyValue("PRODUCT_CREATED", mesProduct));
-
-             }catch (Exception e){
-
-             }
-             messageRepository.save(mesaj);
-            log.info("MESSAGE_CREATED_SUCCES",
-                  keyValue("MESSAGE_CREATED", mesaj));
-
-        }else{
-          log.error("DATA_CREATED_ERR",
-                  keyValue("MESSAGE_EXISTS", mesProduct));
-
-        }
+//        List<MessageEntity> listaMesaje=messageRepository.findAll();
+//        if(listaMesaje.stream().filter(p->p.getId().equals(mesaj.getId())&&p.getAction().equals("CREATED")).collect(Collectors.toList()).size()==0){
+//
+//             try{
+//               mapStocService.addMapStoc(mesProduct);
+//               log.info("PRODUCT_CREATED_SUCCES",
+//                       keyValue("PRODUCT_CREATED", mesProduct));
+//
+//             }catch (Exception e){
+//
+//             }
+//             messageRepository.save(mesaj);
+//            log.info("MESSAGE_CREATED_SUCCES",
+//                  keyValue("MESSAGE_CREATED", mesaj));
+//
+//        }else{
+//          log.error("DATA_CREATED_ERR",
+//                  keyValue("MESSAGE_EXISTS", mesProduct));
+//
+//        }
+          mapStocService.addMapStoc(mesProduct);
+               log.info("PRODUCT_SYNC_SUCCES",
+                       keyValue("PRODUCT_SYNC", mesProduct));
 
       }catch (Exception e){
-        log.error("CREATE ERROR",
-                keyValue("createERROR", e.getMessage()));
+        log.error("SYNC ERROR",
+                keyValue("SYNC_ERROR", e.getMessage()));
 
 
       }
