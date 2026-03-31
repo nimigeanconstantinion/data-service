@@ -60,6 +60,7 @@ public class MapStocServiceImpl implements MapStocService{
             throw new RuntimeException("Produsul cu cod-ul indicat nu exista!!");
         }
         log.info("cmdDel: "+mp.toString());
+        log.info("DEL_PROD",mp.get());
         mapStocRepo.delete(mp.get());
         return true;
     }

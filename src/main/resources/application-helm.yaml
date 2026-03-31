@@ -14,7 +14,7 @@ app:
   elk:
     elasticsearch-uri: ${ELASTICSEARCH_URI:https://elasticsearch:9200}
     kibana-base-url: ${KIBANA_BASE_URL:http://localhost/kibana}
-    logstash-host: ${LOGSTASH_HOST:127.0.0.1}
+    logstash-host: ${LOGSTASH_HOST:local-ms-logstash}
     logstash-port: ${LOGSTASH_PORT:30544}
   security:
     expected-issuer: http://localhost/keycloak/realms/rsk
