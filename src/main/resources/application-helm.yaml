@@ -19,6 +19,15 @@ app:
   security:
     expected-issuer: http://localhost/keycloak/realms/rsk
 
+# ADAUGĂ ASTA AICI:
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URL:http://local-ms-keycloak.local-namespace.svc.cluster.local}
+  realm: ${KEYCLOAK_REALM:rsk}
+  resource: ${KEYCLOAK_CLIENT_ID:register-user}
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+
+
 spring:
   datasource:
     url: ${MYSQL_URL:jdbc:mysql://mysql:3306/micro_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true}
