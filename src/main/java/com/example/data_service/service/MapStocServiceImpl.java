@@ -23,9 +23,9 @@ public class MapStocServiceImpl implements MapStocService{
 
 
     public MapStocOptim getByID(String ida){
-        Optional<MapStocOptim> om=mapStocRepo.findByCodProdus(ida);
-        if(om.isPresent()){
-            return om.get();
+        List<MapStocOptim> lista=mapStocRepo.findByCodProdus(ida);
+        if(lista.size()>0){
+            return lista.get(0);
         }
         throw new RuntimeException("Eroare din Service MapStocService");
     }
@@ -35,8 +35,8 @@ public class MapStocServiceImpl implements MapStocService{
 
         try{
             log.info("cmdAdd: "+mp.toString());
-            Optional<MapStocOptim> optP=mapStocRepo.findByCodProdus(mp.getIdIntern().trim());
-            if(optP.isPresent()){
+            List<MapStocOptim> optP=mapStocRepo.findByCodProdus(mp.getIdIntern().trim());
+            if(optP.size()>0){
                     throw(new RuntimeException("Eroare din Service MapStocService produ existent"));
             }else {
                 mapStocRepo.save(mp);
@@ -53,27 +53,27 @@ public class MapStocServiceImpl implements MapStocService{
 
     @Override
     public boolean delMapStoc(String idp) {
-        Optional<MapStocOptim> mp=mapStocRepo.findByCodProdus(idp);
-        if(mp.isEmpty()){
-            log.error("cmdDelErrNoCode: "+mp.toString());
+        List<MapStocOptim> lmp=mapStocRepo.findByCodProdus(idp);
+        if(lmp.size()==0){
+            log.error("cmdDelErrNoCode: "+idp);
 
             throw new RuntimeException("Produsul cu cod-ul indicat nu exista!!");
         }
-        log.info("cmdDel: "+mp.toString());
-        log.info("DEL_PROD",mp.get());
-        mapStocRepo.delete(mp.get());
+        log.info("cmdDel: "+lmp.get(0).toString());
+        log.info("DEL_PROD",lmp.get(0));
+        mapStocRepo.delete(lmp.get(0));
         return true;
     }
 
     @Override
     public MapStocOptim updMapStoc(MapStocOptim mp) {
-      Optional<MapStocOptim> op=mapStocRepo.findByCodProdus(mp.getIdIntern().trim());
-      if(op.isEmpty()){
+      List<MapStocOptim> lop=mapStocRepo.findByCodProdus(mp.getIdIntern().trim());
+      if(lop.size()==0){
           log.error("cmdUpdNoCode:"+mp.getIdIntern());
           throw new RuntimeException("Maparea cu codul dat , nu exista!!");
       }
       try{
-          MapStocOptim mpp=op.get();
+          MapStocOptim mpp=lop.get(0);
           mpp.setNr_zile(mp.getNr_zile());
           log.info("UPDATE!!");
 //          log.info("commUpd-",op.toString());

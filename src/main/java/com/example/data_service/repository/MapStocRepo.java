@@ -4,6 +4,7 @@ import com.example.data_service.model.MapStocOptim;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.Optional;
 
 public interface MapStocRepo extends JpaRepository<MapStocOptim,Long> {
 
-    @Query(value = "select m from MapStoc m where TRIM(m.idIntern)=TRIM(?1)")
-    Optional<MapStocOptim> findByCodProdus(String idA);
-
+    @Query("select m from MapStoc m where TRIM(m.idIntern) = TRIM(:idA)")
+    List<MapStocOptim> findByCodProdus(@Param("idA") String idA);
 }
