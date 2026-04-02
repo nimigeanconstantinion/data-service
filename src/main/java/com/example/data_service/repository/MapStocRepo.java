@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface MapStocRepo extends JpaRepository<MapStocOptim,Long> {
 
-    @Query(value = "select m from MapStoc m where TRIM(m.idIntern)=?1")
+    @Query(value = "select m from MapStoc m where TRIM(m.idIntern)=TRIM(?1)")
     Optional<MapStocOptim> findByCodProdus(String idA);
 
 }
