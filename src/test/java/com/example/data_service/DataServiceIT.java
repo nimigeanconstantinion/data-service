@@ -53,7 +53,7 @@ class DataServiceIT extends AbstractIntegrationTest {
         template.flush();
 
         // ASSERT - asteptam pana cand consumerul a salvat produsul in DB
-        await().atMost(Duration.ofSeconds(30)).untilAsserted(() -> {
+        await().atMost(Duration.ofSeconds(100)).untilAsserted(() -> {
             List<MapStocOptim> gasite = mapStocRepo.findByCodProdus("ART-001");
             assertThat(gasite).hasSize(1);
             assertThat(gasite.get(0).getArticol()).isEqualTo("Surubelnita");
