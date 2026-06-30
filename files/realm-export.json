@@ -1,0 +1,96 @@
+{
+  "id": "rsk",
+  "realm": "rsk",
+  "enabled": true,
+  "registrationAllowed": true,
+  "clients": [
+    {
+      "clientId": "react-client",
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:5174/*",
+        "http://localhost:5000/*",
+        "http://react-app.local/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      }
+    },
+    {
+      "clientId": "spring-api",
+      "protocol": "openid-connect",
+      "bearerOnly": false,
+      "publicClient": false,
+      "secret": "your-secret-key-here-change-in-production",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false
+    },
+    {
+        "clientId": "registration-service",
+        "name": "Registration Service Client",
+        "protocol": "openid-connect",
+        "publicClient": false,
+        "bearerOnly": false,
+        "standardFlowEnabled": false,
+        "implicitFlowEnabled": false,
+        "directAccessGrantsEnabled": false,
+        "serviceAccountsEnabled": true,
+        "publicClient": false,
+        "clientAuthenticatorType": "client-secret",
+        "secret": "my-secret-keycloak", 
+        "fullScopeAllowed": true,
+        "redirectUris": [],
+        "webOrigins": [],
+        "defaultClientScopes": [
+          "openid",
+          "profile"
+        ]
+      }        
+  ],
+  "users": [
+    {
+      "username": "test",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "USER"
+      ],
+      "clientRoles": {
+        "account": [
+          "view-profile"
+        ]
+      }
+    },
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    }        
+  ]
+}

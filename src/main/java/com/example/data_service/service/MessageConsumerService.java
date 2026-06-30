@@ -37,7 +37,9 @@ public class MessageConsumerService {
 
   @Transactional
 //  @KafkaListener(topics = "product-topic")
-  @KafkaListener(topics = "product-topic")
+//  @KafkaListener(topics = "product-topic")
+  @KafkaListener(topics = "${app.kafka.topic}", groupId = "${spring.kafka.consumer.group-id}")
+
   public void handle(MessageEvent event)  {
     if (event == null || event.getId() == null) {
       log.error("null event received",

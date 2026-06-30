@@ -1,17 +1,25 @@
 <configuration>
-  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+<!--  <include resource="org/springframework/boot/logging/logback/defaults.xml" />-->
+<!--  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />-->
 
-  <springProperty name="LOGSTASH_HOST" source="app.elk.logstash-host" defaultValue="127.0.0.1" />
-  <springProperty name="LOGSTASH_PORT" source="app.elk.logstash-port" defaultValue="30544" />
+<!--  <springProperty name="LOGSTASH_HOST" source="app.elk.logstash-host" defaultValue="127.0.0.1" />-->
+<!--  <springProperty name="LOGSTASH_PORT" source="app.elk.logstash-port" defaultValue="30544" />-->
 
-  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-    <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-  </appender>
+<!--  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--    <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>-->
+<!--    <encoder class="net.logstash.logback.encoder.LogstashEncoder" />-->
+<!--  </appender>-->
 
-  <root level="INFO">
-    <appender-ref ref="CONSOLE" />
-    <appender-ref ref="LOGSTASH" />
-  </root>
+<!--  <root level="INFO">-->
+<!--    <appender-ref ref="CONSOLE" />-->
+<!--    <appender-ref ref="LOGSTASH" />-->
+<!--  </root>-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <springProperty name="APP" source="spring.application.name" defaultValue="data-service" />
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <customFields>{"app_name":"${APP}"}</customFields>
+      </encoder>
+    </appender>
+    <root level="INFO"><appender-ref ref="JSON" /></root>
 </configuration>
