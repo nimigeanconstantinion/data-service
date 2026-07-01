@@ -52,8 +52,8 @@ jobs:
           token: ${{ secrets.GITOPS_PAT }}      # PAT least-privilege (vezi §6)
       - name: Bump image tag în gitops
         run: |
-          sed -i -E "s|(ion21/data-service:)[a-zA-Z0-9._-]+|\1${{ needs.publish.outputs.tag }}|" \
-            business/data-service.yaml
+          sed -i -E "s|^(  tag: ).*|\1${{ needs.publish.outputs.tag }}|" \
+            business/data-service/values.yaml
           git config user.name  "ci-bot"
           git config user.email "ci-bot@users.noreply.github.com"
           git commit -am "ci: data-service -> ${{ needs.publish.outputs.tag }}"
