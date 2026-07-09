@@ -55,6 +55,9 @@ springdoc:
     path: /swagger-ui.html
     config-url: ../v3/api-docs/swagger-config
     url: ../v3/api-docs
+    oauth:
+      client-id: ${SWAGGER_CLIENT_ID:demo-client}
+      use-pkce-with-authorization-code-grant: true
   api-docs:
     path: /v3/api-docs
 logging:
