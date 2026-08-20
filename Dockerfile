@@ -1,5 +1,4 @@
-#FROM eclipse-temurin:17-jdk
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jdk AS build
 
 WORKDIR /app
 EXPOSE 8081
