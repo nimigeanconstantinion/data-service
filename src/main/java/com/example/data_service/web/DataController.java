@@ -95,11 +95,10 @@ public class DataController {
 
     }
 
-//    @ResponseStatus(HttpStatus.OK)
-//    @PostMapping("/bulk")
-//    public ResponseEntity<Boolean> saveBulkList(@RequestBody List<MapStocOptim> lista){
-////        return ResponseEntity.ok(true);
-//        return ResponseEntity.ok(mapStocService.saveBulk(lista));
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/bulk")
+    public ResponseEntity<Boolean> saveBulkList(@RequestBody List<MapStocOptim> lista){
+        return ResponseEntity.ok(mapStocService.saveBulk(lista));
+    }
 
 }
